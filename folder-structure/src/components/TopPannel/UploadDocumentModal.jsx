@@ -1,6 +1,6 @@
-
 import { useRef, useEffect, useState } from "react";
 import axios from "axios";
+import Toast from "../common/Toast";
 
 const UploadDocumentModal = ({ onClose, parentId }) => {
   const modalRef = useRef(null);
@@ -11,6 +11,9 @@ const UploadDocumentModal = ({ onClose, parentId }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadCompleted, setUploadCompleted] = useState(false);
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -18,20 +21,19 @@ const UploadDocumentModal = ({ onClose, parentId }) => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
   const handleCreateFile = async () => {
     if (!selectedFile) return;
+
     setIsLoading(true);
     setIsUploading(true);
     setErrorMessage("");
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("parentId", parentId || "");
+    formData.append("parentId", parentId);
 
     try {
       await axios.post("/api/files", formData, {
@@ -42,10 +44,15 @@ const UploadDocumentModal = ({ onClose, parentId }) => {
           setUploadProgress(percent);
         },
       });
+
       setUploadCompleted(true);
+      setToastMessage("Document uploaded successfully!");
+      setToastType("success");
     } catch (err) {
       console.error("Upload failed:", err);
       setErrorMessage("Failed to upload file. Please try again.");
+      setToastMessage("Failed to upload file.");
+      setToastType("error");
     } finally {
       setIsLoading(false);
       setIsUploading(false);
@@ -53,80 +60,93 @@ const UploadDocumentModal = ({ onClose, parentId }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
-        <div className="modal-header flex-col-container">
-          <h3>Upload Document</h3>
-          <img
-            src="/src/assets/close.svg"
-            alt="close"
-            className="closemodal"
-            onClick={onClose}
-          />
-        </div>
-
-        <div className="h-divider"></div>
-
-        {!isUploading && !uploadCompleted && (
-          <div className="upload-section">
-            <label>Browse document</label>
-            <div className="browse-doc">
-              <img
-                src="/src/assets/upload.svg"
-                alt="upload"
-                className="upload-icon"
-              />
-              <span>{selectedFile?.name}</span>
-              <input
-                type="file"
-                className="file-input"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
-              />
-            </div>
+    <>
+      <div className="modal-overlay">
+        <div className="modal-content" ref={modalRef}>
+          <div className="modal-header flex-col-container">
+            <h3>Upload Document</h3>
+            <img
+              src="/src/assets/close.svg"
+              alt="close"
+              className="closemodal"
+              onClick={onClose}
+            />
           </div>
-        )}
 
-        {(isUploading || uploadCompleted) && selectedFile && (
-          <div className="progress-container">
-            <div className="uploading-file-name"><img src="/src/assets/Google_docs.svg" alt="doc sample icon"/>{selectedFile.name}</div>
-            <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={{ width: `${uploadProgress}%` }}
-              ></div>
+          <div className="h-divider"></div>
+
+          {!isUploading && !uploadCompleted && (
+            <div className="upload-section">
+              <label>Browse document</label>
+              <div className="browse-doc">
+                <img
+                  src="/src/assets/upload.svg"
+                  alt="upload"
+                  className="upload-icon"
+                />
+                <span>{selectedFile?.name}</span>
+                <input
+                  type="file"
+                  className="file-input"
+                  onChange={(e) => setSelectedFile(e.target.files[0])}
+                />
+              </div>
             </div>
-            <div className="progress-text">
-              {uploadProgress}% upload completed
+          )}
+
+          {(isUploading || uploadCompleted) && selectedFile && (
+            <div className="progress-container">
+              <div className="uploading-file-name">
+                <img src="/src/assets/Google_docs.svg" alt="doc icon" />
+                {selectedFile.name}
+              </div>
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+              <div className="progress-text">
+                {uploadProgress}% upload completed
+              </div>
             </div>
+          )}
+
+          <div className="h-divider"></div>
+
+          <div className="modal-actions">
+            <button className="modal-btn cancel" onClick={onClose}>
+              Close
+            </button>
+            <button
+              className={`modal-btn create ${
+                !selectedFile || isLoading || isUploading || uploadCompleted
+                  ? "disabled"
+                  : ""
+              }`}
+              onClick={handleCreateFile}
+              disabled={
+                !selectedFile || isLoading || isUploading || uploadCompleted
+              }
+            >
+              Upload
+            </button>
           </div>
-        )}
 
-        <div className="h-divider"></div>
-
-        <div className="modal-actions">
-          <button className="modal-btn cancel" onClick={onClose}>
-            Close
-          </button>
-          <button
-            className={`modal-btn create ${!selectedFile || isLoading || isUploading || uploadCompleted ? 'disabled' : ''}`}
-
-            onClick={handleCreateFile}
-            disabled={
-              !selectedFile ||
-              isLoading ||
-              isUploading ||
-              uploadCompleted
-            }
-          >
-            Upload
-          </button>
+          {errorMessage && (
+            <div className="error-message">{errorMessage}</div>
+          )}
         </div>
-
-        {errorMessage && (
-          <div className="error-message">{errorMessage}</div>
-        )}
       </div>
-    </div>
+
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage("")}
+        />
+      )}
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import "./ContextMenu.css";
 import { useCreateFolderMutation } from "../../slices/folderSlice";
+import Toast from "../common/Toast";
 
 const CreateFolderModal = ({ onClose, parentId }) => {
   const [folderForm, setFolderForm] = useState({
@@ -14,6 +15,7 @@ const CreateFolderModal = ({ onClose, parentId }) => {
     api: "",
   });
 
+  const [showToast, setShowToast] = useState(false);
   const modalRef = useRef(null);
   const [createFolder, { isLoading }] = useCreateFolderMutation();
 
@@ -40,7 +42,11 @@ const CreateFolderModal = ({ onClose, parentId }) => {
     try {
       await createFolder({ ...folderForm, parentId }).unwrap();
       setFolderForm({ folderName: "", folderDesc: "" });
-      onClose();
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        onClose();
+      }, 2000);
     } catch (error) {
       console.error("Folder creation failed:", error);
       setFormErrors((prev) => ({
@@ -57,7 +63,6 @@ const CreateFolderModal = ({ onClose, parentId }) => {
       [name]: value,
     }));
 
-    // Clear error message when user types
     setFormErrors((prev) => ({
       ...prev,
       [name === "folderName" ? "name" : "desc"]: "",
@@ -65,74 +70,83 @@ const CreateFolderModal = ({ onClose, parentId }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
-        <div className="modal-header flex-col-container">
-          <h3>Create Folder</h3>
-          <img
-            src="/src/assets/close.svg"
-            alt="close"
-            className="closemodal"
-            onClick={onClose}
-          />
-        </div>
+    <>
+      {showToast && (
+        <Toast
+          message="Folder created successfully!"
+          onClose={() => setShowToast(false)}
+        />
+      )}
 
-        {formErrors.api && (
-          <div style={{ color: "red", fontSize: "13px", marginBottom: "8px" }}>
-            {formErrors.api}
+      <div className="modal-overlay">
+        <div className="modal-content" ref={modalRef}>
+          <div className="modal-header flex-col-container">
+            <h3>Create Folder</h3>
+            <img
+              src="/src/assets/close.svg"
+              alt="close"
+              className="closemodal"
+              onClick={onClose}
+            />
           </div>
-        )}
 
-        <div className="h-divider"></div>
-
-        <div className="folder-data-section">
-          <div className="label">Name</div>
-          <input
-            type="text"
-            name="folderName"
-            placeholder="Folder name"
-            className="modal-input"
-            value={folderForm.folderName}
-            onChange={setTarget}
-          />
-          {formErrors.name && (
-            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-              {formErrors.name}
+          {formErrors.api && (
+            <div style={{ color: "red", fontSize: "13px", marginBottom: "8px" }}>
+              {formErrors.api}
             </div>
           )}
 
-          <div className="label">Description</div>
-          <input
-            type="text"
-            name="folderDesc"
-            placeholder="Folder description"
-            className="modal-input"
-            value={folderForm.folderDesc}
-            onChange={setTarget}
-          />
-          {formErrors.desc && (
-            <div style={{ color: "red", fontSize: "12px"}}>
-              {formErrors.desc}
-            </div>
-          )}
-        </div>
+          <div className="h-divider"></div>
 
-        <div className="h-divider"></div>
+          <div className="folder-data-section">
+            <div className="label">Name</div>
+            <input
+              type="text"
+              name="folderName"
+              placeholder="Folder name"
+              className="modal-input"
+              value={folderForm.folderName}
+              onChange={setTarget}
+            />
+            {formErrors.name && (
+              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                {formErrors.name}
+              </div>
+            )}
 
-        <div className="modal-actions">
-          <button className="modal-btn cancel" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="modal-btn create"
-            onClick={handleCreateFolder}
-            disabled={isLoading}
-          >
-            {isLoading ? "Creating..." : "Create"}
-          </button>
+            <div className="label">Description</div>
+            <input
+              type="text"
+              name="folderDesc"
+              placeholder="Folder description"
+              className="modal-input"
+              value={folderForm.folderDesc}
+              onChange={setTarget}
+            />
+            {formErrors.desc && (
+              <div style={{ color: "red", fontSize: "12px" }}>
+                {formErrors.desc}
+              </div>
+            )}
+          </div>
+
+          <div className="h-divider"></div>
+
+          <div className="modal-actions">
+            <button className="modal-btn cancel" onClick={onClose}>
+              Cancel
+            </button>
+            <button
+              className="modal-btn create"
+              onClick={handleCreateFolder}
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating..." : "Create"}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

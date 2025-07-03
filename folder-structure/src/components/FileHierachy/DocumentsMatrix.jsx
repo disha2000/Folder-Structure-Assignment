@@ -1,10 +1,21 @@
+import { useEffect } from "react";
 import { useGetFolderStatsQuery } from "../../slices/folderSlice";
+import socket from "../../socket";
 
 const DocumentsMatrix = () => {
-  const { data, isLoading} = useGetFolderStatsQuery();
+  const { data, isLoading, refetch } = useGetFolderStatsQuery();
 
   const folderCount = data?.folderCount ?? 0;
   const fileCount = data?.fileCount ?? 0;
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      refetch();
+    };
+
+    socket.on("update", handleUpdate);
+    return () => socket.off("update", handleUpdate);
+  }, [refetch]);
 
   return (
     <div className="document-matrix-count">

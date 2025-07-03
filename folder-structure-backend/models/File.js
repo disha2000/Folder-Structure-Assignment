@@ -7,7 +7,7 @@ const fileSchema = new mongoose.Schema({
     folderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Folder',
-      required: true,
+      required: false,
     },
   }, { timestamps: true });
   

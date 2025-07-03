@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect} from "react";
 import "./ContextMenu.css";
 import CreateFolderModal from "./CreateFolderModal";
 import UploadDocumentModal from "./UploadDocumentModal";
@@ -106,9 +106,9 @@ const ContextMenu = () => {
         )}
       </div>
 
-      {showModal && <CreateFolderModal onClose={() => setShowModal(false)} />}
+      {showModal && <CreateFolderModal onClose={() => setShowModal(false)} parentId={null}/>}
       {showUploadModal && (
-        <UploadDocumentModal onClose={() => setShowUploadModal(false)} />
+        <UploadDocumentModal onClose={() => setShowUploadModal(false)} parentId={null}/>
       )}
     </>
   );

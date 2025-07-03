@@ -78,7 +78,7 @@ const MiddleSectionTable = ({ setSelectedFile }) => {
           >
             <span
               className="table-cell name"
-              style={{ paddingLeft: `${level * 24}px` }}
+              style={{ paddingLeft: `${level * 40}px` }}
               onClick={() => isFolder && toggleExpand(item.id)}
             >
               {isFolder && (
