@@ -139,7 +139,7 @@ npm run dev
 
 * `POST /api/folder/` — Create a new folder
 * `GET /api/folder/tree` — Fetch full folder tree recursively including the files
-* `GET /api/folder/stats` — To get Folder and Files count
+* `GET /api/folder/stats` — To get Folder and Files count to show matrix at left panel top 
 * `GET /api/folder/specifictree?parentId=<parentID>` — Filtered specific folder using parent id i.e folder id and by query params (name, description, date)
 
 ### File
