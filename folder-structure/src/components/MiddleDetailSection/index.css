@@ -1,0 +1,147 @@
+.middle-section-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    background-color: #e2ecf8;
+  }
+  
+  .table-header {
+    display: grid;
+    grid-template-columns: 30% 30% 20% 15% 5%;
+    font-weight: 600;
+    padding: 20px 15px;
+    color: #555;
+  }
+  
+  .table-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .table-card {
+    background-color: #fff;
+    border-radius: 12px;
+    border-bottom: 1px solid #ddd;
+    margin: 8px 12px;
+  }
+  
+  .table-row {
+    display: grid;
+    grid-template-columns: 30% 30% 20% 15% 5%;
+    align-items: center;
+    height: 61px;
+    border-bottom: 1px solid #ddd;
+  }
+  .table-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  .table-cell.name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  
+  .text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 80%;
+    display: inline-block;
+  }
+
+  .table-cell.name .icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  
+
+  .table-cell.description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    width: 80%;
+  }
+  
+  .icon-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .child-count-badge {
+    position: absolute;
+    top: -3px;
+    left: 1px;
+    background-color: #d7b750;
+    color: black;
+    font-size: 8px;
+    font-weight: 600;
+    border-radius: 100%;
+    min-width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    z-index: 1;
+  }
+  
+  .expand-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+  
+  .options-icon {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  .file-viewer-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+    background-color: #fefefe;
+    border: 1px solid #ccc;
+  }
+  
+  .viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f6f6f6;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+  }
+  
+  .close-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+  
+  .viewer-body {
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .file-viewer-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  

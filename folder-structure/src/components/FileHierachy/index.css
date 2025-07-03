@@ -1,0 +1,100 @@
+.left-hierachy-section {
+    width: 320px;
+    border-right: 1px solid #DDDDDD;
+    height: 100vh;
+    position: relative;
+    background: white;
+    transition: all 0.3s ease;
+}
+.document-matrix-count {
+  margin: 20px 0px;
+}
+
+.inner-matrix-count{
+  justify-content: space-evenly;
+}
+.backdrop {
+    position: absolute;
+    right: -15px;
+    top: 20px;
+    cursor: pointer;
+}
+
+.open-icon {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.folder-item {
+    position: relative;
+  }
+  
+  .vertical-line {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 1px;
+    border-left: 1px dotted #999;
+    z-index: 0;
+  }
+  
+  .horizontal-line {
+    position: absolute;
+    width: 13px;
+    height: 1px;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 1px dotted #999;
+    z-index: 1;
+  }
+  
+  .item-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 40px;
+    border-bottom: 1px solid #DDDDDD;
+  }
+  
+  .item-clickable {
+    gap: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    user-select: none;
+    position: relative;
+    z-index: 2;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .item-icon {
+    width: 17px;
+    height: 15px;
+  }
+  
+  .arrow-indicator {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    background-color: #dee2ef;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 8px;
+  }
+  
+  .folder-tree {
+    overflow-x: hidden;
+    padding-left: 10px;
+    border-top: 1px solid #DDDDDD;
+  }
+  
