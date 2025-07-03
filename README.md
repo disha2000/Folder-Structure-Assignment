@@ -139,6 +139,7 @@ npm run dev
 
 * `POST /api/folder/` — Create a new folder
 * `GET /api/folder/tree` — Fetch full folder tree recursively including the files
+* `GET /api/folder/stats` — To get Folder and Files count
 * `GET /api/folder/specifictree?parentId=686576ca643305a43c1a2519` — Filtered specific folder using parent id i.e folder id and by query params (name, description, date)
 
 ### File
@@ -155,4 +156,8 @@ npm run dev
 * Filtering handled server-side for  data response
 
 ---
+
+## Output Sample
+![image](https://github.com/user-attachments/assets/8982bc40-1f98-4d93-997b-00713a8ccc07)
+
 
