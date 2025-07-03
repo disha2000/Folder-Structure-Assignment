@@ -2,14 +2,20 @@ import { useRef, useEffect, useState } from "react";
 import "./ContextMenu.css";
 import { useCreateFolderMutation } from "../../slices/folderSlice";
 
-const CreateFolderModal = ({onClose, parentId }) => {
+const CreateFolderModal = ({ onClose, parentId }) => {
   const [folderForm, setFolderForm] = useState({
     folderName: "",
     folderDesc: "",
   });
 
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    desc: "",
+    api: "",
+  });
+
   const modalRef = useRef(null);
-  const [createFolder] = useCreateFolderMutation();
+  const [createFolder, { isLoading }] = useCreateFolderMutation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -22,15 +28,25 @@ const CreateFolderModal = ({onClose, parentId }) => {
   }, [onClose]);
 
   const handleCreateFolder = async () => {
+    const errors = {
+      name: folderForm.folderName.trim() === "" ? "Folder name is required" : "",
+      desc: folderForm.folderDesc.trim() === "" ? "Folder description is required" : "",
+      api: "",
+    };
+
+    setFormErrors(errors);
+    if (errors.name || errors.desc) return;
+
     try {
-      await createFolder({...folderForm, parentId})
-      setFolderForm({
-        folderName: "",
-        folderDesc: "",
-      });
+      await createFolder({ ...folderForm, parentId }).unwrap();
+      setFolderForm({ folderName: "", folderDesc: "" });
       onClose();
     } catch (error) {
       console.error("Folder creation failed:", error);
+      setFormErrors((prev) => ({
+        ...prev,
+        api: error?.data?.message || "Something went wrong",
+      }));
     }
   };
 
@@ -39,6 +55,12 @@ const CreateFolderModal = ({onClose, parentId }) => {
     setFolderForm((prevFolderForm) => ({
       ...prevFolderForm,
       [name]: value,
+    }));
+
+    // Clear error message when user types
+    setFormErrors((prev) => ({
+      ...prev,
+      [name === "folderName" ? "name" : "desc"]: "",
     }));
   };
 
@@ -55,10 +77,16 @@ const CreateFolderModal = ({onClose, parentId }) => {
           />
         </div>
 
+        {formErrors.api && (
+          <div style={{ color: "red", fontSize: "13px", marginBottom: "8px" }}>
+            {formErrors.api}
+          </div>
+        )}
+
         <div className="h-divider"></div>
 
         <div className="folder-data-section">
-          <label>Name</label>
+          <div className="label">Name</div>
           <input
             type="text"
             name="folderName"
@@ -67,8 +95,13 @@ const CreateFolderModal = ({onClose, parentId }) => {
             value={folderForm.folderName}
             onChange={setTarget}
           />
+          {formErrors.name && (
+            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+              {formErrors.name}
+            </div>
+          )}
 
-          <label>Description</label>
+          <div className="label">Description</div>
           <input
             type="text"
             name="folderDesc"
@@ -77,6 +110,11 @@ const CreateFolderModal = ({onClose, parentId }) => {
             value={folderForm.folderDesc}
             onChange={setTarget}
           />
+          {formErrors.desc && (
+            <div style={{ color: "red", fontSize: "12px"}}>
+              {formErrors.desc}
+            </div>
+          )}
         </div>
 
         <div className="h-divider"></div>
@@ -85,8 +123,12 @@ const CreateFolderModal = ({onClose, parentId }) => {
           <button className="modal-btn cancel" onClick={onClose}>
             Cancel
           </button>
-          <button className="modal-btn create" onClick={handleCreateFolder}>
-            Create
+          <button
+            className="modal-btn create"
+            onClick={handleCreateFolder}
+            disabled={isLoading}
+          >
+            {isLoading ? "Creating..." : "Create"}
           </button>
         </div>
       </div>
